@@ -3,7 +3,7 @@
     "displayName": "Pluma VR",
     "version": "0.0.1",
     "description": "Reusable components for using Pluma in VR",
-    "unity": "2021.1.12f1",
+    "unity": "2021.1",
     "keywords": [
       "pluma"
     ],
