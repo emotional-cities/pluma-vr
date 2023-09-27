@@ -1,0 +1,22 @@
+{
+    "name": "com.neurogears.pluma-vr",
+    "displayName": "Pluma VR",
+    "version": "0.0.1",
+    "description": "Reusable components for using Pluma in VR",
+    "unity": "2021.1.12f1",
+    "keywords": [
+      "pluma"
+    ],
+    "author": {
+      "name": "NeuroGEARS",
+      "url": "https://neurogears.org/o"
+    },
+    "dependencies": {
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/emotional-cities/pluma-vr",
+      "revision": ""
+    },
+    "type": "library"
+  }
