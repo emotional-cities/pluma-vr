@@ -1,5 +1,5 @@
 {
-    "name": "com.neurogears.pluma-vr",
+    "name": "com.neurogears.plumavr",
     "displayName": "Pluma VR",
     "version": "0.0.1",
     "description": "Reusable components for using Pluma in VR",
@@ -17,6 +17,5 @@
       "type": "git",
       "url": "https://github.com/emotional-cities/pluma-vr",
       "revision": ""
-    },
-    "type": "library"
+    }
   }
