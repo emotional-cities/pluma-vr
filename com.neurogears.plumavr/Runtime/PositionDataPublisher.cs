@@ -16,12 +16,12 @@ public class PositionDataPublisher : DataPublisher
             .SendMoreFrame(BitConverter.GetBytes(DateTime.Now.Ticks / (TimeSpan.TicksPerMillisecond / 1000)))
             .SendMoreFrame(BitConverter.GetBytes(position.x))
             .SendMoreFrame(BitConverter.GetBytes(position.y))
-            .SendMoreFrame(BitConverter.GetBytes(position.z));
+            .SendFrame(BitConverter.GetBytes(position.z));
 
         PubSocket.SendMoreFrame("ForwardVector")
             .SendMoreFrame(BitConverter.GetBytes(DateTime.Now.Ticks / (TimeSpan.TicksPerMillisecond / 1000)))
             .SendMoreFrame(BitConverter.GetBytes(forward.x))
             .SendMoreFrame(BitConverter.GetBytes(forward.y))
-            .SendMoreFrame(BitConverter.GetBytes(forward.z));
+            .SendFrame(BitConverter.GetBytes(forward.z));
     }
 }
