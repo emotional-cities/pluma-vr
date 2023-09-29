@@ -4,22 +4,8 @@ using NetMQ.Sockets;
 using System;
 using UnityEngine;
 
-public class GliaDataPublisher : MonoBehaviour
+public class GliaDataPublisher : DataPublisher
 {
-    public string PublisherBindAddress;
-    private PublisherSocket PubSocket;
-
-    private void Awake()
-    {
-        AsyncIO.ForceDotNet.Force();
-    }
-
-    private void Start()
-    {
-        PubSocket = new PublisherSocket();
-        PubSocket.Bind(PublisherBindAddress);
-    }
-
     public void HandleHeartRate(HeartRate hr)
     {
         if (hr != null)
@@ -84,14 +70,5 @@ public class GliaDataPublisher : MonoBehaviour
                 .SendMoreFrame(BitConverter.GetBytes(imu.Data[0].Acc.Y))
                 .SendFrame(BitConverter.GetBytes(imu.Data[0].Acc.Z));
         }
-    }
-
-    private void OnApplicationQuit()
-    {
-        if (PubSocket != null)
-        {
-            PubSocket.Dispose();
-        }
-        NetMQConfig.Cleanup(false);
     }
 }
