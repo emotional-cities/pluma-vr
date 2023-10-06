@@ -7,6 +7,14 @@ public class VrControllerMovement : MonoBehaviour
 {
     private Rigidbody rb;
 
+    private enum Axis {
+        primary,
+        secondary
+    }
+
+    [SerializeField]
+    private Axis inputAxis;
+
     [SerializeField]
     private float translationSpeed;
     [SerializeField]
@@ -78,7 +86,15 @@ public class VrControllerMovement : MonoBehaviour
     Vector2 GetControllerVector(InputDevice device)
     {
         Vector2 vector;
-        device.TryGetFeatureValue(CommonUsages.secondary2DAxis, out vector);
+
+        if (inputAxis == Axis.primary) {
+            device.TryGetFeatureValue(CommonUsages.primary2DAxis, out vector);
+        } else if (inputAxis == Axis.secondary) {
+            device.TryGetFeatureValue(CommonUsages.secondary2DAxis, out vector);
+        } else {
+            device.TryGetFeatureValue(CommonUsages.primary2DAxis, out vector);
+        }
+
         return vector;
     }
 
