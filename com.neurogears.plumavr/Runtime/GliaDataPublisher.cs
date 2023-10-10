@@ -19,9 +19,10 @@ public class GliaDataPublisher : DataPublisher
     {
         if (hr != null)
         {
-            byte[] heartRateData = GetTimestampBytes(hr.Timestamp).Concat(BitConverter.GetBytes(hr.Rate)).ToArray();
+            byte[] heartRateData = BitConverter.GetBytes(hr.Rate);
 
             PubSocket.SendMoreFrame("HeartRate")
+                .SendMoreFrame(GetTimestampBytes(hr.Timestamp).ToArray())
                 .SendFrame(heartRateData);
         }
     }
@@ -32,13 +33,13 @@ public class GliaDataPublisher : DataPublisher
         {
             if (camImage.SensorInfo.Location == "Mouth")
             {
-                byte[] cameraImageData = GetTimestampBytes(camImage.Timestamp)
-                    .Concat(BitConverter.GetBytes(camImage.Width))
+                byte[] cameraImageData = BitConverter.GetBytes(camImage.Width)
                     .Concat(BitConverter.GetBytes(camImage.Height))
                     .Concat(camImage.ImageData)
                     .ToArray();
 
                 PubSocket.SendMoreFrame("Mouth")
+                    .SendMoreFrame(GetTimestampBytes(camImage.Timestamp).ToArray())
                     .SendFrame(cameraImageData);
             }
         }
@@ -48,14 +49,14 @@ public class GliaDataPublisher : DataPublisher
     {
         if (et != null)
         {
-            byte[] gazeData = GetTimestampBytes(et.Timestamp)
-                .Concat(BitConverter.GetBytes(et.CombinedGaze.X))
+            byte[] gazeData = BitConverter.GetBytes(et.CombinedGaze.X)
                 .Concat(BitConverter.GetBytes(et.CombinedGaze.Y))
                 .Concat(BitConverter.GetBytes(et.CombinedGaze.Z))
                 .ToArray();
 
-            PubSocket.SendMoreFrame("EyeTracking")
-                .SendFrame(gazeData);
+            PubSocket.SendMoreFrame("EyeTracking") // Topic
+                .SendMoreFrame(GetTimestampBytes(et.Timestamp).ToArray()) // Timestamp
+                .SendFrame(gazeData); // Blob data
         }
     }
 
@@ -63,13 +64,13 @@ public class GliaDataPublisher : DataPublisher
     {
         if (imu != null)
         {
-            byte[] imuData = GetTimestampBytes(imu.Timestamp)
-                .Concat(BitConverter.GetBytes(imu.Data[0].Acc.X))
+            byte[] imuData = BitConverter.GetBytes(imu.Data[0].Acc.X)
                 .Concat(BitConverter.GetBytes(imu.Data[0].Acc.Y))
                 .Concat(BitConverter.GetBytes(imu.Data[0].Acc.Z))
                 .ToArray();
 
             PubSocket.SendMoreFrame("IMU")
+                .SendMoreFrame(GetTimestampBytes(imu.Timestamp).ToArray())
                 .SendFrame(imuData);
         }
     }

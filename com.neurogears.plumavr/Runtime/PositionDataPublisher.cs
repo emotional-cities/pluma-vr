@@ -22,9 +22,10 @@ public class PositionDataPublisher : DataPublisher
             .Concat(BitConverter.GetBytes(transform.forward.z))
             .ToArray();
 
-        byte[] allData = BitConverter.GetBytes(timestamp).Concat(positionData).Concat(forwardData).ToArray();
+        byte[] allData = positionData.Concat(forwardData).ToArray();
 
         PubSocket.SendMoreFrame("Position")
+            .SendMoreFrame(BitConverter.GetBytes(timestamp))
             .SendFrame(allData);
     }
 }
