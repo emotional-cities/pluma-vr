@@ -2,19 +2,27 @@ using HP.Omnicept.Messaging.Messages;
 using NetMQ;
 using NetMQ.Sockets;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GliaDataPublisher : DataPublisher
 {
+    IEnumerable<byte> GetTimestampBytes(Timestamp timestamp)
+    {
+        return BitConverter.GetBytes(timestamp.HardwareTimeMicroSeconds)
+            .Concat(BitConverter.GetBytes(timestamp.OmniceptTimeMicroSeconds))
+            .Concat(BitConverter.GetBytes(timestamp.SystemTimeMicroSeconds));
+    }
+
     public void HandleHeartRate(HeartRate hr)
     {
         if (hr != null)
         {
+            byte[] heartRateData = GetTimestampBytes(hr.Timestamp).Concat(BitConverter.GetBytes(hr.Rate)).ToArray();
+
             PubSocket.SendMoreFrame("HeartRate")
-                .SendMoreFrame(BitConverter.GetBytes(hr.Timestamp.HardwareTimeMicroSeconds))
-                .SendMoreFrame(BitConverter.GetBytes(hr.Timestamp.OmniceptTimeMicroSeconds))
-                .SendMoreFrame(BitConverter.GetBytes(hr.Timestamp.SystemTimeMicroSeconds))
-                .SendFrame(BitConverter.GetBytes(hr.Rate));
+                .SendFrame(heartRateData);
         }
     }
 
@@ -24,22 +32,14 @@ public class GliaDataPublisher : DataPublisher
         {
             if (camImage.SensorInfo.Location == "Mouth")
             {
-                byte[] imageData = camImage.ImageData;
-                var width = camImage.Width;
-                var height = camImage.Height;
-                var channels = 1;
-                var hardwareTime = camImage.Timestamp.HardwareTimeMicroSeconds;
-                var omniceptTime = camImage.Timestamp.OmniceptTimeMicroSeconds;
-                var systemTime = camImage.Timestamp.SystemTimeMicroSeconds;
+                byte[] cameraImageData = GetTimestampBytes(camImage.Timestamp)
+                    .Concat(BitConverter.GetBytes(camImage.Width))
+                    .Concat(BitConverter.GetBytes(camImage.Height))
+                    .Concat(camImage.ImageData)
+                    .ToArray();
 
                 PubSocket.SendMoreFrame("Mouth")
-                    .SendMoreFrame(BitConverter.GetBytes(hardwareTime))
-                    .SendMoreFrame(BitConverter.GetBytes(omniceptTime))
-                    .SendMoreFrame(BitConverter.GetBytes(systemTime))
-                    .SendMoreFrame(imageData)
-                    .SendMoreFrame(BitConverter.GetBytes(width))
-                    .SendMoreFrame(BitConverter.GetBytes(height))
-                    .SendFrame(BitConverter.GetBytes(channels));
+                    .SendFrame(cameraImageData);
             }
         }
     }
@@ -48,13 +48,14 @@ public class GliaDataPublisher : DataPublisher
     {
         if (et != null)
         {
+            byte[] gazeData = GetTimestampBytes(et.Timestamp)
+                .Concat(BitConverter.GetBytes(et.CombinedGaze.X))
+                .Concat(BitConverter.GetBytes(et.CombinedGaze.Y))
+                .Concat(BitConverter.GetBytes(et.CombinedGaze.Z))
+                .ToArray();
+
             PubSocket.SendMoreFrame("EyeTracking")
-                .SendMoreFrame(BitConverter.GetBytes(et.Timestamp.HardwareTimeMicroSeconds))
-                .SendMoreFrame(BitConverter.GetBytes(et.Timestamp.OmniceptTimeMicroSeconds))
-                .SendMoreFrame(BitConverter.GetBytes(et.Timestamp.SystemTimeMicroSeconds))
-                .SendMoreFrame(BitConverter.GetBytes(et.CombinedGaze.X))
-                .SendMoreFrame(BitConverter.GetBytes(et.CombinedGaze.Y))
-                .SendFrame(BitConverter.GetBytes(et.CombinedGaze.Z));
+                .SendFrame(gazeData);
         }
     }
 
@@ -62,13 +63,14 @@ public class GliaDataPublisher : DataPublisher
     {
         if (imu != null)
         {
+            byte[] imuData = GetTimestampBytes(imu.Timestamp)
+                .Concat(BitConverter.GetBytes(imu.Data[0].Acc.X))
+                .Concat(BitConverter.GetBytes(imu.Data[0].Acc.Y))
+                .Concat(BitConverter.GetBytes(imu.Data[0].Acc.Z))
+                .ToArray();
+
             PubSocket.SendMoreFrame("IMU")
-                .SendMoreFrame(BitConverter.GetBytes(imu.Timestamp.HardwareTimeMicroSeconds))
-                .SendMoreFrame(BitConverter.GetBytes(imu.Timestamp.OmniceptTimeMicroSeconds))
-                .SendMoreFrame(BitConverter.GetBytes(imu.Timestamp.SystemTimeMicroSeconds))
-                .SendMoreFrame(BitConverter.GetBytes(imu.Data[0].Acc.X))
-                .SendMoreFrame(BitConverter.GetBytes(imu.Data[0].Acc.Y))
-                .SendFrame(BitConverter.GetBytes(imu.Data[0].Acc.Z));
+                .SendFrame(imuData);
         }
     }
 }
