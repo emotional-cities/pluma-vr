@@ -15,6 +15,16 @@ public class GliaDataPublisher : DataPublisher
             .Concat(BitConverter.GetBytes(timestamp.SystemTimeMicroSeconds));
     }
 
+    IEnumerable<byte> GetEyeBytes(Eye eye)
+    {
+        return BitConverter.GetBytes(eye.Openness)
+            .Concat(BitConverter.GetBytes(eye.OpennessConfidence))
+            .Concat(BitConverter.GetBytes(eye.PupilDilation))
+            .Concat(BitConverter.GetBytes(eye.PupilDilationConfidence))
+            .Concat(BitConverter.GetBytes(eye.PupilPosition.X))
+            .Concat(BitConverter.GetBytes(eye.PupilPosition.Y));
+    }
+
     public void HandleHeartRate(HeartRate hr)
     {
         if (hr != null)
@@ -52,6 +62,8 @@ public class GliaDataPublisher : DataPublisher
             byte[] gazeData = BitConverter.GetBytes(et.CombinedGaze.X)
                 .Concat(BitConverter.GetBytes(et.CombinedGaze.Y))
                 .Concat(BitConverter.GetBytes(et.CombinedGaze.Z))
+                .Concat(GetEyeBytes(et.LeftEye))
+                .Concat(GetEyeBytes(et.RightEye))
                 .ToArray();
 
             PubSocket.SendMoreFrame("EyeTracking") // Topic
@@ -67,6 +79,9 @@ public class GliaDataPublisher : DataPublisher
             byte[] imuData = BitConverter.GetBytes(imu.Data[0].Acc.X)
                 .Concat(BitConverter.GetBytes(imu.Data[0].Acc.Y))
                 .Concat(BitConverter.GetBytes(imu.Data[0].Acc.Z))
+                .Concat(BitConverter.GetBytes(imu.Data[0].Gyro.X))
+                .Concat(BitConverter.GetBytes(imu.Data[0].Gyro.Y))
+                .Concat(BitConverter.GetBytes(imu.Data[0].Gyro.Z))
                 .ToArray();
 
             PubSocket.SendMoreFrame("IMU")
