@@ -53,16 +53,21 @@ public class VrControllerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        leftMovementVector = new Vector2(0, 0);
+        rightMovementVector = new Vector2(0, 0);
         // Get left controller input
         if (leftControllers.Count > 0)
         {
-            leftMovementVector = GetControllerVector(leftControllers[0]);
+            foreach(var controller in leftControllers)
+                leftMovementVector += GetControllerVector(controller);
         }
 
         // Get right controller input
         if (rightControllers.Count > 0)
         {
-            rightMovementVector = GetControllerVector(rightControllers[0]);
+            foreach (var controller in rightControllers)
+                rightMovementVector += GetControllerVector(controller);
         }
 
         Vector3 worldForward = Vector3.ProjectOnPlane(forwardSource.forward, Vector3.up);
