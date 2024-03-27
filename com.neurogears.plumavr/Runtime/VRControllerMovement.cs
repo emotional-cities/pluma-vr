@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 
-public class VrControllerMovement : MonoBehaviour
+public class VRControllerMovement : MonoBehaviour
 {
     private Rigidbody rb;
 
