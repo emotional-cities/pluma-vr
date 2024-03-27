@@ -1,0 +1,24 @@
+{
+    "name": "com.neurogears.pluma-vr",
+    "displayName": "Pluma VR",
+    "version": "0.1.0",
+    "description": "Reusable components for using the Pluma wearable acquisition system in VR",
+    "unity": "2021.1",
+    "keywords": [
+      "pluma",
+      "emotional",
+      "cities"
+    ],
+    "author": {
+      "name": "NeuroGEARS",
+      "email": "contact@neurogears.org",
+      "url": "https://neurogears.org/"
+    },
+    "dependencies": {
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/emotional-cities/pluma-vr",
+      "revision": ""
+    }
+  }
