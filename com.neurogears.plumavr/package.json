@@ -1,15 +1,18 @@
 {
     "name": "com.neurogears.pluma-vr",
     "displayName": "Pluma VR",
-    "version": "0.0.3",
-    "description": "Reusable components for using Pluma in VR",
+    "version": "0.1.0",
+    "description": "Reusable components for using the Pluma wearable acquisition system in VR",
     "unity": "2021.1",
     "keywords": [
-      "pluma"
+      "pluma",
+      "emotional",
+      "cities"
     ],
     "author": {
       "name": "NeuroGEARS",
-      "url": "https://neurogears.org/o"
+      "email": "contact@neurogears.org",
+      "url": "https://neurogears.org/"
     },
     "dependencies": {
     },
