@@ -24,7 +24,7 @@ public class PositionDataPublisher : DataPublisher
 
         byte[] allData = positionData.Concat(forwardData).ToArray();
 
-        PubSocket.SendMoreFrame("Position")
+        PubSocket.SendMoreFrame("VRTransform")
             .SendMoreFrame(BitConverter.GetBytes(timestamp))
             .SendFrame(allData);
     }
