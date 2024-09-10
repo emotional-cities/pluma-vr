@@ -59,16 +59,41 @@ public class GliaDataPublisher : DataPublisher
     {
         if (et != null)
         {
+            var combinedGazeDirection = new Vector3(-et.CombinedGaze.X, et.CombinedGaze.Y, et.CombinedGaze.Z);
+
+            RaycastHit hit;
+            Debug.DrawRay(Camera.transform.position, (Camera.transform.rotation * combinedGazeDirection) * 100, UnityEngine.Color.red);
+            //var ray = new Ray(Camera.transform.position, (Camera.transform.rotation * combinedGazeDirection));
+            Ray ray = new Ray(Camera.transform.position, Camera.transform.TransformDirection(combinedGazeDirection));
+            
+            if (Physics.Raycast(ray, out hit,300, HitObjects))
+            {
+                //EyeHit.transform.position = hit.point;
+                hitPoint = hit.point;
+                //Debug.Log(combinedGazeDirection);
+            }
+            else
+            {
+                //EyeHit.transform.position = ray.GetPoint(MaxDistance);
+                //Debug.Log("None");
+                hitPoint= ray.GetPoint(MaxDistance);
+            }
+            byte[] positionData = BitConverter.GetBytes(hitPoint.x)
+                .Concat(BitConverter.GetBytes(hitPoint.y))
+                .Concat(BitConverter.GetBytes(hitPoint.z))
+                .ToArray();
+                
             byte[] gazeData = BitConverter.GetBytes(et.CombinedGaze.X)
                 .Concat(BitConverter.GetBytes(et.CombinedGaze.Y))
                 .Concat(BitConverter.GetBytes(et.CombinedGaze.Z))
                 .Concat(GetEyeBytes(et.LeftEye))
                 .Concat(GetEyeBytes(et.RightEye))
                 .ToArray();
-
+            
+            byte[] allData = gazeData.Concat(positionData).ToArray();
             PubSocket.SendMoreFrame("EyeTracking") // Topic
                 .SendMoreFrame(GetTimestampBytes(et.Timestamp).ToArray()) // Timestamp
-                .SendFrame(gazeData); // Blob data
+                .SendFrame(allData); // Blob data
         }
     }
 
