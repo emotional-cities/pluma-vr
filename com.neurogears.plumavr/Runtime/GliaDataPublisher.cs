@@ -5,9 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GliaDataPublisher : DataPublisher
 {
+    public Transform Camera;
+    public Vector3 hitPoint = new Vector3();
+    public int MaxDistance;
+    public LayerMask HitObjects;
     IEnumerable<byte> GetTimestampBytes(Timestamp timestamp)
     {
         return BitConverter.GetBytes(timestamp.HardwareTimeMicroSeconds)
@@ -89,11 +94,11 @@ public class GliaDataPublisher : DataPublisher
                 .Concat(GetEyeBytes(et.LeftEye))
                 .Concat(GetEyeBytes(et.RightEye))
                 .ToArray();
-            
+
             byte[] allData = gazeData.Concat(positionData).ToArray();
             PubSocket.SendMoreFrame("EyeTracking") // Topic
                 .SendMoreFrame(GetTimestampBytes(et.Timestamp).ToArray()) // Timestamp
-                .SendFrame(allData); // Blob data
+                .SendFrame(allData); // Blob data     
         }
     }
 
